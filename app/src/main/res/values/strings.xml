@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">MyAppLibrary</string>
+    <string name="app_name">MyApplicationLibrary</string>
+    <string name="button1">button1</string>
+    <string name="button2">button2</string>
+    <string name="button3">button3</string>
+    <string name="textview1">This is the button1!</string>
+    <string name="textview2">This is the button2!</string>
+    <string name="textview3">This is the button3!</string>
 </resources>
