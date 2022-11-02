@@ -1,58 +1,53 @@
 package ru.geekbrains.myapplibrary
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import ru.geekbrains.myapplibrary.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainView {
 
-
-    private lateinit var binding: ActivityMainBinding
-
-    private val counters = mutableListOf(0, 0, 0)
+    private var bindingNull: ActivityMainBinding? = null
+    private val binding get() = bindingNull!!
+    private lateinit var presenter: CounterPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        bindingNull = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        initPresenter()
 
         with(binding) {
             btnButton1.setOnClickListener {
-                tvText1.text = (++counters[0]).toString()
-                Toast.makeText(this@MainActivity, "Working", Toast.LENGTH_SHORT).show()
+                presenter.onCounterClick(R.id.btnButton1)
             }
             btnButton2.setOnClickListener {
-                tvText2.text = (++counters[1]).toString()
+                presenter.onCounterClick(R.id.btnButton2)
             }
             btnButton3.setOnClickListener {
-                tvText3.text = (++counters[2]).toString()
+                presenter.onCounterClick(R.id.btnButton3)
             }
         }
     }
 
-    private fun initViews() {
+    private fun initPresenter() {
+        presenter = CounterPresenter(this)
+    }
+
+    // HW заменить position на константы
+    override fun setText(counter: String, position: Int) {
         with(binding) {
-            tvText1.text = counters[0].toString()
-            tvText2.text = counters[1].toString()
-            tvText3.text = counters[2].toString()
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putIntArray("counters", counters.toIntArray())
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        val array = savedInstanceState.getIntArray("counters")
-        counters.let { list ->
-            list.clear()
-            array?.toList()?.let {
-                list.addAll(it)
+            when (position) {
+                zero -> tvText1.text = counter
+                one -> tvText2.text = counter
+                two -> tvText3.text = counter
             }
         }
-        initViews()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        bindingNull = null
+    }
+
 }
